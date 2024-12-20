@@ -31,14 +31,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bangers&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${bangers.className}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${bangers.className} antialiased`}
       >
         {children}
       </body>

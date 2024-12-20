@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { IoSend } from 'react-icons/io5';
 import { OpenAI } from 'openai';
+import Image from 'next/image';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -160,10 +161,6 @@ const HorizontalCards = () => {
     return () => container.removeEventListener('wheel', handleWheel);
   }, [activeIndex, isScrolling, cards.length]);
 
-  const handleChatClick = (cardId: number) => {
-    setActiveChatId(cardId === activeChatId ? null : cardId);
-  };
-
   const handleSendMessage = async (cardId: number) => {
     if (!message.trim() || isLoading) return;
     
@@ -255,9 +252,11 @@ const HorizontalCards = () => {
                         controls
                       />
                     ) : (
-                      <img 
+                      <Image 
                         src={card.media.url}
                         alt={card.title}
+                        width={500}
+                        height={300}
                         className="w-full h-[300px] object-cover rounded-md mb-4"
                       />
                     )}
