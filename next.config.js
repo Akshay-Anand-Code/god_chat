@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['your-domain.com'], // Add your image domains here
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**', // Or specify your exact domains
+      },
+    ],
+    unoptimized: true, // This will allow GIFs to work properly
   },
 }
 

@@ -81,7 +81,7 @@ const HorizontalCards = () => {
       description: 'Protector of Solana', 
       media: { 
         type: 'gif', 
-        url: '/gifs/sam.gif' 
+        url: '/gifs/sam.gif'
       },
       character: characterConfigs[2],
       messages: []
@@ -92,7 +92,7 @@ const HorizontalCards = () => {
       description: 'Savior of the world', 
       media: { 
         type: 'gif', 
-        url: '/gifs/superman.gif' 
+        url: '/gifs/superman.gif'
       },
       character: characterConfigs[3],
       messages: []
@@ -103,7 +103,7 @@ const HorizontalCards = () => {
       description: 'Your family doctor', 
       media: { 
         type: 'gif', 
-        url: '/gifs/johnny-sins.gif' 
+        url: '/gifs/johnny-sins.gif'
       },
       character: characterConfigs[4],
       messages: []
@@ -114,7 +114,7 @@ const HorizontalCards = () => {
       description: 'Coming soon...', 
       media: { 
         type: 'image', 
-        url: '/images/blur.jpg' 
+        url: '/images/blur.jpg'
       },
       character: characterConfigs[5],
       messages: []
@@ -129,7 +129,7 @@ const HorizontalCards = () => {
   const SCROLL_COOLDOWN = 500;
 
   useEffect(() => {
-    const container = containerRef.current as HTMLDivElement;
+    const container = containerRef.current;
     if (!container) return;
 
     const handleWheel = (e: WheelEvent) => {
@@ -157,8 +157,8 @@ const HorizontalCards = () => {
       }
     };
 
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    return () => container.removeEventListener('wheel', handleWheel);
+    (container as HTMLDivElement).addEventListener('wheel', handleWheel as any, { passive: false });
+    return () => (container as HTMLDivElement).removeEventListener('wheel', handleWheel as any);
   }, [activeIndex, isScrolling, cards.length]);
 
   const handleSendMessage = async (cardId: number) => {
@@ -257,6 +257,7 @@ const HorizontalCards = () => {
                         alt={card.title}
                         width={500}
                         height={300}
+                        unoptimized={card.media.url.endsWith('.gif')}
                         className="w-full h-[300px] object-cover rounded-md mb-4"
                       />
                     )}
