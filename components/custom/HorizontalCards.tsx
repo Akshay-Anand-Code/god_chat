@@ -10,6 +10,7 @@ interface Message {
   content: string;
 }
 
+type WheelEventHandler = (event: WheelEvent) => void;
 interface CharacterConfig {
   systemPrompt: string;
   temperature: number;
@@ -157,8 +158,8 @@ const HorizontalCards = () => {
       }
     };
 
-    (container as HTMLDivElement).addEventListener('wheel', handleWheel as any, { passive: false });
-    return () => (container as HTMLDivElement).removeEventListener('wheel', handleWheel as any);
+    (container as HTMLDivElement).addEventListener('wheel', handleWheel as WheelEventHandler, { passive: false });
+    return () => (container as HTMLDivElement).removeEventListener('wheel', handleWheel as WheelEventHandler);
   }, [activeIndex, isScrolling, cards.length]);
 
   const handleSendMessage = async (cardId: number) => {
