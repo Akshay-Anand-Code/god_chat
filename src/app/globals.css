@@ -57,3 +57,29 @@
     @apply bg-background text-foreground;
   }
 }
+ 
+@layer utilities {
+  /* Custom scrollbar styles */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+  
+  /* Webkit scrollbar styles */
+  .scroll-smooth::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scroll-smooth::-webkit-scrollbar-track {
+    background: #1C1D25;
+    border-radius: 3px;
+  }
+
+  .scroll-smooth::-webkit-scrollbar-thumb {
+    background: #363945;
+    border-radius: 3px;
+  }
+
+  .scroll-smooth::-webkit-scrollbar-thumb:hover {
+    background: #4A4D5E;
+  }
+}

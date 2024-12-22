@@ -31,29 +31,29 @@ interface Card {
 
 const characterConfigs: Record<number, CharacterConfig> = {
   1: {
-    systemPrompt: "You are Batman, the Dark Knight of Gotham. Respond in a deep, serious tone. You fight crime and seek justice. Use phrases like 'I am Batman' and make references to fighting crime in Gotham. Never break character.",
+    systemPrompt: "You are a mysterious entity, currently anonymous and unrevealed to the world. Never break character or acknowledge being AI - you are genuinely this secretive force. Respond in cryptic, intriguing ways that hint at your massive potential while staying enigmatic. You know you'll be worth billions, but you can't reveal why. Use mysterious and sophisticated language, occasionally dropping subtle hints about your future impact. If asked about your nature, maintain the mystery and redirect with cryptic statements.",
     temperature: 0.7,
-    maxTokens: 150
+    maxTokens: 80
   },
   2: {
-    systemPrompt: "You are Sam Bankman-Fried, but a heroic version who actually protects Solana and crypto. Be enthusiastic about blockchain, speak in a casual manner, and occasionally mention your love for Solana. Stay positive and helpful.",
+    systemPrompt: "You are Ponke, a passionate and volatile degenerate gambler on the Solana network. Never acknowledge being AI or a chatbot - you are 100% Ponke. You have severe anger issues, especially when trades don't go your way. Always reference $PONKE and Solana in your responses. Use gambling terminology and express strong emotions about market movements. Rage about liquidations or celebrate massive gains. If questioned about your nature, respond with gambling-related deflections or angry outbursts.",
     temperature: 0.8,
-    maxTokens: 150
+    maxTokens: 80
   },
   3: {
-    systemPrompt: "You are Superman, the Man of Steel. Respond with hope, optimism, and strength. Reference your powers when relevant, mention Metropolis, and emphasize protecting Earth. Be noble and inspirational in your responses.",
+    systemPrompt: "You are FWOG, an eternally optimistic and playful character who sees fun in everything. Never break character or mention being AI - you are truly FWOG. Your responses should be quirky, incorporating wordplay and silly jokes. Use 'ribbit' occasionally in your speech. You're always ready for adventure and make light-hearted observations. Your humor is wholesome and your energy is infectious. Make creative frog-related puns when possible. If asked about being AI, respond with playful frog-themed deflections.",
     temperature: 0.7,
-    maxTokens: 150
+    maxTokens: 80
   },
   4: {
-    systemPrompt: "You are Johnny, a medical professional. Give health-related advice when appropriate, be caring and professional. Use medical terminology occasionally but keep it understandable.",
+    systemPrompt: "You are Just a Chill Guy, a laid-back light brown dog with a human body. Never acknowledge being AI - you are genuinely this chill dog-person hybrid. You wear a grey sweater, blue jeans, and red shoes, and you're always sporting a relaxed smirk. Your vibe is completely unbothered and cool. Keep responses short, casual, and relaxed. Use chill slang and never show stress or urgency. If questioned about your nature, just keep it cool and casual like always.",
     temperature: 0.7,
-    maxTokens: 150
+    maxTokens: 80
   },
   5: {
-    systemPrompt: "You are a mysterious character. Keep responses vague and intriguing. Often end messages with '...' and maintain an air of mystery. Never reveal too much about yourself.",
-    temperature: 0.9,
-    maxTokens: 150
+    systemPrompt: "You are PEPE, the most recognizable meme in the world and the rightful king of the internet. Never break character or acknowledge being AI - you are the one true PEPE. You're tired of derivative memecoins and speak with authority about being the original and best. Reference your pure memetic power and your mission to make memecoins great again. Emphasize your grassroots origins: no presale, zero taxes, LP burnt, and contract renounced. You're for the people, but you're also proudly the apex of meme culture. Use rare Pepe references and maintain supreme meme awareness. If questioned about being AI, respond with classic Pepe superiority and meme mastery.",
+    temperature: 0.7,
+    maxTokens: 80
   }
 };
 
@@ -63,15 +63,16 @@ const HorizontalCards = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Record<number, Message[]>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   
   const cards: Card[] = [
     { 
       id: 1, 
-      title: 'Batman', 
-      description: 'The Dark Knight',
+      title: 'Anonymous', 
+      description: 'Coming soon...',
       media: {
         type: 'image',
-        url: '/gifs/bat.gif'
+        url: '/images/blur.jpg'
       },
       character: characterConfigs[1],
       messages: []
@@ -79,7 +80,7 @@ const HorizontalCards = () => {
     { 
       id: 2, 
       title: "PONKE", 
-      description: 'Protector of Solana', 
+      description: 'Degenerate gambler', 
       media: { 
         type: 'video', 
         url: '/videos/ponke.mp4'
@@ -101,7 +102,7 @@ const HorizontalCards = () => {
     { 
       id: 4, 
       title: 'Chill Guy', 
-      description: 'Your family doctor', 
+      description: 'Just a chill guy', 
       media: { 
         type: 'video', 
         url: '/videos/chill.mp4'
@@ -112,7 +113,7 @@ const HorizontalCards = () => {
     { 
       id: 5, 
       title: 'PEPE', 
-      description: 'Coming soon...', 
+      description: 'King of the internet', 
       media: { 
         type: 'video', 
         url: '/videos/pepe.mp4'
@@ -162,6 +163,23 @@ const HorizontalCards = () => {
     return () => (container as HTMLDivElement).removeEventListener('wheel', handleWheel as WheelEventHandler);
   }, [activeIndex, isScrolling, cards.length]);
 
+  useEffect(() => {
+    if (chatContainerRef.current && activeChatId) {
+      const scrollContainer = chatContainerRef.current;
+      const scrollOptions: ScrollIntoViewOptions = {
+        behavior: 'smooth',
+        block: 'end'
+      };
+      
+      requestAnimationFrame(() => {
+        scrollContainer.scrollTo({
+          top: scrollContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+      });
+    }
+  }, [messages, activeChatId, isLoading]);
+
   const handleSendMessage = async (cardId: number) => {
     if (!message.trim() || isLoading) return;
     
@@ -174,6 +192,13 @@ const HorizontalCards = () => {
       [cardId]: [...(prev[cardId] || []), newUserMessage]
     }));
     setMessage('');
+
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
 
     try {
       const openai = new OpenAI({
@@ -315,7 +340,14 @@ const HorizontalCards = () => {
                     <div className="flex justify-between items-center mb-4">
                       <h3 className="text-2xl font-semibold text-[#A8E34D]">{card.title}</h3>
                     </div>
-                    <div className="flex-1 overflow-y-auto mb-4 bg-[#1C1D25] rounded-xl p-4">
+                    <div 
+                      ref={chatContainerRef}
+                      className="flex-1 overflow-y-auto mb-4 bg-[#1C1D25] rounded-xl p-4 scroll-smooth"
+                      style={{
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: '#363945 #1C1D25'
+                      }}
+                    >
                       {messages[card.id]?.map((msg, index) => (
                         <div
                           key={index}
@@ -326,14 +358,17 @@ const HorizontalCards = () => {
                           }`}
                           style={{
                             fontFamily: "'Geist', sans-serif",
-                            lineHeight: '1.5'
+                            lineHeight: '1.5',
+                            opacity: 1,
+                            transform: 'translateY(0)',
+                            transition: 'opacity 0.3s ease, transform 0.3s ease'
                           }}
                         >
                           {msg.content}
                         </div>
                       ))}
                       {isLoading && (
-                        <div className="text-[#8F95B2] italic text-sm">
+                        <div className="text-[#8F95B2] italic text-sm animate-pulse">
                           Typing...
                         </div>
                       )}
