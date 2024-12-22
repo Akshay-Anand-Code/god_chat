@@ -59,11 +59,17 @@ const characterConfigs: Record<number, CharacterConfig> = {
 
 const HorizontalCards = () => {
   const containerRef = useRef(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  
+  const [activeIndex, setActiveIndex] = useState(0);
   const [activeChatId, setActiveChatId] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Record<number, Message[]>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollAccumulator = useRef(0);
+  const lastScrollTime = useRef(Date.now());
+  const [mounted, setMounted] = useState(false);
   
   const cards: Card[] = [
     { 
@@ -123,10 +129,14 @@ const HorizontalCards = () => {
     }
   ];
 
-  const [activeIndex, setActiveIndex] = useState(Math.floor(cards.length / 2));
-  const [isScrolling, setIsScrolling] = useState(false);
-  const scrollAccumulator = useRef(0);
-  const lastScrollTime = useRef(Date.now());
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    setActiveIndex(Math.floor(cards.length / 2));
+  }, []);
+
   const SCROLL_THRESHOLD = 100;
   const SCROLL_COOLDOWN = 500;
 
@@ -166,10 +176,6 @@ const HorizontalCards = () => {
   useEffect(() => {
     if (chatContainerRef.current && activeChatId) {
       const scrollContainer = chatContainerRef.current;
-      const scrollOptions: ScrollIntoViewOptions = {
-        behavior: 'smooth',
-        block: 'end'
-      };
       
       requestAnimationFrame(() => {
         scrollContainer.scrollTo({
@@ -235,6 +241,10 @@ const HorizontalCards = () => {
       setIsLoading(false);
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div 
