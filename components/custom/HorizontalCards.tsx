@@ -78,44 +78,44 @@ const HorizontalCards = () => {
     },
     { 
       id: 2, 
-      title: "Sam", 
+      title: "PONKE", 
       description: 'Protector of Solana', 
       media: { 
-        type: 'gif', 
-        url: '/gifs/sam.gif'
+        type: 'video', 
+        url: '/videos/ponke.mp4'
       },
       character: characterConfigs[2],
       messages: []
     },
     { 
       id: 3, 
-      title: 'Superman', 
+      title: 'FWOG', 
       description: 'Savior of the world', 
       media: { 
-        type: 'gif', 
-        url: '/gifs/superman.gif'
+        type: 'video', 
+        url: '/videos/fwog.mp4'
       },
       character: characterConfigs[3],
       messages: []
     },
     { 
       id: 4, 
-      title: 'Jhonny', 
+      title: 'Chill Guy', 
       description: 'Your family doctor', 
       media: { 
-        type: 'gif', 
-        url: '/gifs/johnny-sins.gif'
+        type: 'video', 
+        url: '/videos/chill.mp4'
       },
       character: characterConfigs[4],
       messages: []
     },
     { 
       id: 5, 
-      title: 'Kia Milafa', 
+      title: 'PEPE', 
       description: 'Coming soon...', 
       media: { 
-        type: 'image', 
-        url: '/images/blur.jpg'
+        type: 'video', 
+        url: '/videos/pepe.mp4'
       },
       character: characterConfigs[5],
       messages: []
@@ -214,7 +214,7 @@ const HorizontalCards = () => {
   return (
     <div 
       ref={containerRef}
-      className="relative h-screen w-full overflow-hidden flex items-center justify-center"
+      className="relative h-screen w-full overflow-hidden flex items-center justify-center bg-[#1C1D25]"
       style={{ perspective: '1000px' }}
     >
       <div className="relative flex items-center justify-center w-full">
@@ -243,14 +243,17 @@ const HorizontalCards = () => {
                 filter: isActive ? 'none' : 'blur(1px)'
               }}
             >
-              <div className="bg-white rounded-lg shadow-xl w-[500px] h-[450px] p-6 flex flex-col">
+              <div className="bg-[#282A36] rounded-xl shadow-2xl w-[500px] h-[450px] p-6 flex flex-col border border-[#363945]">
                 {!isChat ? (
                   <>
                     {card.media.type === 'video' ? (
                       <video 
                         src={card.media.url}
-                        className="w-full h-[300px] object-cover rounded-md mb-4"
-                        controls
+                        className="w-full h-[300px] object-cover rounded-xl mb-4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
                       />
                     ) : (
                       <Image 
@@ -259,23 +262,23 @@ const HorizontalCards = () => {
                         width={500}
                         height={300}
                         unoptimized={card.media.url.endsWith('.gif')}
-                        className="w-full h-[300px] object-cover rounded-md mb-4"
+                        className="w-full h-[300px] object-cover rounded-xl mb-4"
                       />
                     )}
                     <div className="flex justify-between items-center">
                       <div>
                         <h3 
-                          className="text-3xl mb-2" 
+                          className="text-3xl mb-2 text-[#A8E34D]" 
                           style={{
                             fontFamily: "'Bangers', cursive",
                             letterSpacing: '0.05em',
-                            textShadow: '2px 2px 0 rgba(0,0,0,0.1)'
+                            textShadow: '2px 2px 0 rgba(0,0,0,0.3)'
                           }}
                         >
                           {card.title}
                         </h3>
                         <p 
-                          className="text-gray-700 font-medium tracking-wide"
+                          className="text-[#8F95B2] font-medium tracking-wide"
                           style={{
                             fontFamily: "'Geist', sans-serif",
                             fontSize: '1.1rem',
@@ -287,7 +290,7 @@ const HorizontalCards = () => {
                       </div>
                       <button
                         onClick={() => setActiveChatId(card.id)}
-                        className="bg-blue-600 text-white px-8 py-3 rounded-lg transition-all duration-200 font-sans text-lg font-semibold tracking-wide shadow-[0_4px_10px_rgba(0,0,0,0.15)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.25)] hover:bg-blue-700 hover:transform hover:-translate-y-0.5 active:translate-y-0"
+                        className="bg-[#A8E34D] text-[#1C1D25] px-8 py-3 rounded-lg transition-all duration-200 font-sans text-lg font-semibold tracking-wide shadow-[0_4px_10px_rgba(168,227,77,0.3)] hover:shadow-[0_6px_20px_rgba(168,227,77,0.4)] hover:bg-[#B9F45E] hover:transform hover:-translate-y-0.5 active:translate-y-0"
                       >
                         Chat
                       </button>
@@ -297,31 +300,29 @@ const HorizontalCards = () => {
                   <div className="flex flex-col h-full relative">
                     <button
                       onClick={() => setActiveChatId(null)}
-                      className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors cursor-pointer z-10"
+                      className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full hover:bg-[#363945] transition-colors cursor-pointer z-10"
                       aria-label="Close chat"
                     >
                       <svg 
                         viewBox="0 0 24 24" 
-                        className="w-6 h-6 text-gray-600"
+                        className="w-6 h-6 text-[#8F95B2]"
                         fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path
-                          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                        />
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                       </svg>
                     </button>
                     <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-2xl font-semibold">{card.title}</h3>
+                      <h3 className="text-2xl font-semibold text-[#A8E34D]">{card.title}</h3>
                     </div>
-                    <div className="flex-1 overflow-y-auto mb-4 bg-gray-50 rounded-lg p-4">
+                    <div className="flex-1 overflow-y-auto mb-4 bg-[#1C1D25] rounded-xl p-4">
                       {messages[card.id]?.map((msg, index) => (
                         <div
                           key={index}
                           className={`mb-3 p-3 rounded-lg text-base ${
                             msg.role === 'user' 
-                              ? 'bg-blue-100 ml-auto max-w-[80%] text-gray-800' 
-                              : 'bg-gray-100 mr-auto max-w-[80%] text-gray-700'
+                              ? 'bg-[#363945] ml-auto max-w-[80%] text-[#E4E8F7]' 
+                              : 'bg-[#2A2C3A] mr-auto max-w-[80%] text-[#E4E8F7]'
                           }`}
                           style={{
                             fontFamily: "'Geist', sans-serif",
@@ -332,7 +333,7 @@ const HorizontalCards = () => {
                         </div>
                       ))}
                       {isLoading && (
-                        <div className="text-gray-500 italic text-sm">
+                        <div className="text-[#8F95B2] italic text-sm">
                           Typing...
                         </div>
                       )}
@@ -343,7 +344,7 @@ const HorizontalCards = () => {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="Type your message..."
-                        className="flex-1 border rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 bg-[#1C1D25] border border-[#363945] text-[#E4E8F7] rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-[#A8E34D] placeholder-[#8F95B2]"
                         style={{
                           fontFamily: "'Geist', sans-serif"
                         }}
@@ -353,7 +354,7 @@ const HorizontalCards = () => {
                       />
                       <button
                         onClick={() => handleSendMessage(card.id)}
-                        className="bg-blue-600 text-white p-2.5 rounded-lg hover:bg-blue-700 transition-colors"
+                        className="bg-[#A8E34D] text-[#1C1D25] p-2.5 rounded-lg hover:bg-[#B9F45E] transition-colors"
                       >
                         <IoSend size={20} />
                       </button>
