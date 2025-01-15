@@ -61,6 +61,9 @@ const HorizontalCards = () => {
   const lastScrollTime = useRef(Date.now());
   const [mounted, setMounted] = useState(false);
   
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const cards: Card[] = [
     { 
       id: 1, 
@@ -80,7 +83,7 @@ const HorizontalCards = () => {
     { 
       id: 2, 
       title: 'Jesus Christ', 
-      description: 'The Light of the World',
+      description: '',
       media: { 
         type: 'image', 
         url: '/images/jesus.jpg'
@@ -90,6 +93,21 @@ const HorizontalCards = () => {
     },
     { 
       id: 3, 
+      title: 'LUKE',
+      description: '',
+      media: { 
+        type: 'video',
+        url: '/videos/LUKE.MP4'
+      },
+      character: {
+        systemPrompt: "",
+        temperature: 0.7,
+        maxTokens: 150
+      },
+      messages: []
+    },
+    { 
+      id: 4, 
       title: 'Buddha', 
       description: '',
       media: { 
@@ -214,6 +232,58 @@ const HorizontalCards = () => {
     }
   };
 
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    if (activeIndex === 2) {
+      const playVideo = async () => {
+        try {
+          videoElement.volume = 0.7;
+          videoElement.muted = false;
+          await videoElement.play();
+        } catch (error) {
+          console.log("First autoplay attempt failed:", error);
+          const playOnClick = () => {
+            videoElement.volume = 0.7;
+            videoElement.muted = false;
+            videoElement.play()
+              .then(() => {
+                document.removeEventListener('click', playOnClick);
+              })
+              .catch(err => console.log("Play on click failed:", err));
+          };
+          document.addEventListener('click', playOnClick);
+        }
+      };
+      
+      videoElement.currentTime = 0;
+      playVideo();
+    } else {
+      videoElement.pause();
+    }
+
+    return () => {
+      if (videoElement) {
+        videoElement.pause();
+        videoElement.currentTime = 0;
+      }
+    };
+  }, [activeIndex]);
+
+  useEffect(() => {
+    // Close chat when user scrolls to a different card
+    if (activeChatId !== null && activeIndex !== cards.findIndex(card => card.id === activeChatId)) {
+      setActiveChatId(null);
+    }
+  }, [activeIndex]);
+
+  useEffect(() => {
+    if (activeChatId && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [activeChatId]);
+
   if (!mounted) {
     return null;
   }
@@ -322,12 +392,15 @@ const HorizontalCards = () => {
                         <div className="relative">
                           {card.media.type === 'video' ? (
                             <video 
+                              ref={videoRef}
                               src={card.media.url}
                               className="w-full h-[300px] object-cover rounded-xl mb-4 shadow-[0_0_30px_rgba(255,215,0,0.3)]"
-                              autoPlay
-                              loop
-                              muted
+                              style={{ 
+                                objectPosition: '50% 20%'
+                              }}
                               playsInline
+                              loop
+                              preload="auto"
                             />
                           ) : (
                             <Image 
@@ -348,23 +421,18 @@ const HorizontalCards = () => {
                         <div className="flex justify-between items-center mt-auto">
                           <div>
                             <h3 
-                              className="text-5xl mb-2 font-bold relative"
+                              className="text-4xl mb-2 font-bold relative"
                               style={{
                                 fontFamily: "'Cinzel', serif",
                                 letterSpacing: '0.1em',
                                 color: '#FFFFFF',
                                 textShadow: `
-                                  -1px -1px 0 #000,
-                                  1px -1px 0 #000,
-                                  -1px 1px 0 #000,
-                                  1px 1px 0 #000,
-                                  0 0 20px rgba(255,255,255,1),
-                                  0 0 35px rgba(255,255,255,0.8)
+                                  2px 2px 4px rgba(0,0,0,0.5),
+                                  0 0 20px rgba(255,255,255,0.8),
+                                  0 0 35px rgba(255,255,255,0.6)
                                 `,
-                                filter: 'brightness(1.5) contrast(1.4)',
                                 WebkitFontSmoothing: 'antialiased',
                                 fontWeight: 900,
-                                WebkitTextStroke: '1px rgba(0,0,0,0.3)'
                               }}
                             >
                               {card.title}
@@ -381,90 +449,121 @@ const HorizontalCards = () => {
                               {card.description}
                             </p>
                           </div>
-                          <button
-                            onClick={() => setActiveChatId(card.id)}
-                            className="relative group overflow-hidden bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] text-black px-10 py-4 rounded-lg 
-                              transition-all duration-300 font-serif text-xl tracking-wider font-bold
-                              shadow-[0_0_30px_rgba(255,215,0,0.4)] 
-                              hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] 
-                              hover:scale-105 
-                              active:scale-95
-                              truncate max-w-[150px]"
-                            style={{
-                              textShadow: '0 0 10px rgba(255,255,255,0.5)',
-                              fontFamily: "'Cinzel', serif",
-                            }}
-                          >
-                            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
-                              style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
-                            />
-                            <span className="relative">
-                              Confess
-                            </span>
-                          </button>
+                          {card.id === 3 ? (
+                            <a
+                              href="https://www.tiktok.com/@capitalclubcommunity/video/7316138002814668065?_r=1&_t=ZG-8t5kZm02h7J"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="relative group overflow-hidden bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] text-black px-6 py-3 rounded-lg 
+                                transition-all duration-300 font-serif text-lg tracking-wider font-bold
+                                shadow-[0_0_30px_rgba(255,215,0,0.4)] 
+                                hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] 
+                                hover:scale-105 
+                                active:scale-95
+                                min-w-[180px]
+                                text-center"
+                              style={{
+                                textShadow: '0 0 10px rgba(255,255,255,0.5)',
+                                fontFamily: "'Cinzel', serif",
+                              }}
+                            >
+                              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
+                                style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
+                              />
+                              <span className="relative">
+                                Watch
+                              </span>
+                            </a>
+                          ) : (
+                            <button
+                              onClick={() => setActiveChatId(card.id)}
+                              className="relative group overflow-hidden bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] text-black px-6 py-3 rounded-lg 
+                                transition-all duration-300 font-serif text-lg tracking-wider font-bold
+                                shadow-[0_0_30px_rgba(255,215,0,0.4)] 
+                                hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] 
+                                hover:scale-105 
+                                active:scale-95
+                                min-w-[180px]"
+                              style={{
+                                textShadow: '0 0 10px rgba(255,255,255,0.5)',
+                                fontFamily: "'Cinzel', serif",
+                              }}
+                            >
+                              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
+                                style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
+                              />
+                              <span className="relative">
+                                Confession
+                              </span>
+                            </button>
+                          )}
                         </div>
                       </>
                     ) : (
                       <div className="flex flex-col h-full relative">
-                        <button
-                          onClick={() => setActiveChatId(null)}
-                          className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full hover:bg-[#363945] transition-colors cursor-pointer z-10"
-                          aria-label="Close chat"
+                        {/* Chat title */}
+                        <h3 
+                          className="text-3xl font-bold mb-4 text-center"
+                          style={{
+                            fontFamily: "'Cinzel', serif",
+                            color: '#FFD700',
+                            textShadow: '0 0 10px rgba(255,215,0,0.5)',
+                          }}
                         >
-                          <svg 
-                            viewBox="0 0 24 24" 
-                            className="w-6 h-6 text-[#8F95B2]"
-                            fill="currentColor"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                          </svg>
-                        </button>
-                        <div className="flex justify-between items-center mb-4">
-                          <h3 className="text-2xl font-semibold text-[#A8E34D]">{card.title}</h3>
-                        </div>
+                          {card.title}
+                        </h3>
+
+                        {/* Messages container */}
                         <div 
                           ref={chatContainerRef}
-                          className="flex-1 overflow-y-auto mb-4 bg-[#1C1D25] rounded-xl p-4 scroll-smooth"
+                          className="flex-1 overflow-y-auto mb-4 rounded-xl p-4 
+                            bg-gradient-to-b from-black/40 to-black/20 backdrop-blur-sm
+                            border border-[#FFD700]/30"
                           style={{
                             scrollbarWidth: 'thin',
-                            scrollbarColor: '#363945 #1C1D25'
+                            scrollbarColor: '#FFD700 transparent'
                           }}
                         >
                           {messages[card.id]?.map((msg, index) => (
                             <div
                               key={index}
-                              className={`mb-3 p-3 rounded-lg text-base ${
-                                msg.role === 'user' 
-                                  ? 'bg-[#363945] ml-auto max-w-[80%] text-[#E4E8F7]' 
-                                  : 'bg-[#2A2C3A] mr-auto max-w-[80%] text-[#E4E8F7]'
-                              }`}
+                              className={`mb-3 p-4 rounded-lg text-base backdrop-blur-sm
+                                ${msg.role === 'user' 
+                                  ? 'ml-auto max-w-[80%] bg-gradient-to-r from-[#FFD700]/20 to-[#FFA500]/20 border border-[#FFD700]/30' 
+                                  : 'mr-auto max-w-[80%] bg-gradient-to-r from-white/10 to-white/5 border border-white/20'
+                                }`}
                               style={{
-                                fontFamily: "'Geist', sans-serif",
-                                lineHeight: '1.5',
-                                opacity: 1,
-                                transform: 'translateY(0)',
-                                transition: 'opacity 0.3s ease, transform 0.3s ease'
+                                fontFamily: "'Cinzel', serif",
+                                color: '#FFFFFF',
+                                textShadow: '0 0 10px rgba(255,255,255,0.2)',
                               }}
                             >
                               {msg.content}
                             </div>
                           ))}
                           {isLoading && (
-                            <div className="text-[#8F95B2] italic text-sm animate-pulse">
-                              Typing...
+                            <div className="text-[#FFD700] text-sm animate-pulse text-center"
+                              style={{ fontFamily: "'Cinzel', serif" }}
+                            >
+                              Receiving divine message...
                             </div>
                           )}
                         </div>
+
+                        {/* Input area */}
                         <div className="flex gap-2">
                           <input
+                            ref={inputRef}
                             type="text"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Type your message..."
-                            className="flex-1 bg-[#1C1D25] border border-[#363945] text-[#E4E8F7] rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-[#A8E34D] placeholder-[#8F95B2]"
+                            placeholder="Speak your heart..."
+                            autoFocus
+                            className="flex-1 bg-black/20 border border-[#FFD700]/30 text-white rounded-lg px-4 py-3
+                              placeholder-white/70 focus:outline-none focus:border-[#FFD700]
+                              backdrop-blur-sm transition-all duration-300"
                             style={{
-                              fontFamily: "'Geist', sans-serif"
+                              fontFamily: "'Cinzel', serif",
                             }}
                             onKeyPress={(e) => {
                               if (e.key === 'Enter') handleSendMessage(card.id);
@@ -472,9 +571,11 @@ const HorizontalCards = () => {
                           />
                           <button
                             onClick={() => handleSendMessage(card.id)}
-                            className="bg-[#A8E34D] text-[#1C1D25] p-2.5 rounded-lg hover:bg-[#B9F45E] transition-colors"
+                            className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] p-3 rounded-lg
+                              hover:shadow-[0_0_15px_rgba(255,215,0,0.5)]
+                              transition-all duration-300"
                           >
-                            <IoSend size={20} />
+                            <IoSend size={20} className="text-black" />
                           </button>
                         </div>
                       </div>
