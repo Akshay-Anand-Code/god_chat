@@ -14,7 +14,7 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "CHAT.FUN",
+  title: "$CHURCH",
   description: "Chat with fun characters",
 };
 
