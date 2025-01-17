@@ -2,7 +2,6 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { IoSend } from 'react-icons/io5';
-import { OpenAI } from 'openai';
 import Image from 'next/image';
 
 interface Message {
@@ -271,7 +270,7 @@ const HorizontalCards = () => {
     if (activeChatId !== null && activeIndex !== cards.findIndex(card => card.id === activeChatId)) {
       setActiveChatId(null);
     }
-  }, [activeIndex]);
+  }, [activeIndex, activeChatId, cards]);
 
   useEffect(() => {
     if (activeChatId && inputRef.current) {
