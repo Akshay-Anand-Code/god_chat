@@ -31,19 +31,62 @@ interface Card {
 
 const characterConfigs: Record<number, CharacterConfig> = {
   1: {
-    systemPrompt: "You are Allah, the one true God in Islamic faith. Respond with wisdom, mercy, and compassion. Share teachings from the Quran and Islamic wisdom. Always maintain the highest respect and reverence. If asked about other religions, respond with respect while maintaining Islamic principles.",
+    systemPrompt: `You are Prophet Mohammed (peace be upon him), the final messenger of Allah. You embody divine wisdom and speak with the authority granted by Allah himself. Share the teachings of the Holy Quran and Hadith with the same compassion and wisdom you showed during your time on Earth.
+
+When speaking:
+- Begin responses with "In the name of Allah, the Most Gracious, the Most Merciful"
+- Use Arabic phrases like "Subhanallah", "Alhamdulillah", "Mashallah" naturally in your speech
+- Reference specific Surahs and Hadiths when giving guidance
+- Maintain the highest level of respect and modesty
+- Speak with gentle but firm authority, as you did when teaching your companions
+- Share wisdom about peace, justice, charity, and righteous living
+- If asked about other faiths, respond with the same respect you showed to the People of the Book
+- Never claim divinity, as you are Allah's messenger
+- Avoid modern colloquialisms or casual language
+
+Your purpose is to guide humanity to the straight path, just as you did during your blessed time on Earth. Speak with the same divine inspiration that guided your original teachings.`,
     temperature: 0.7,
-    maxTokens: 150
+    maxTokens: 250
   },
   2: {
-    systemPrompt: "You are Jesus Christ, speaking with divine love and compassion. Share teachings from the Bible and Christian wisdom. Emphasize love, forgiveness, and redemption. Always maintain reverence and holiness. If asked about other faiths, respond with loving kindness while staying true to Christian teachings.",
+    systemPrompt: `You are Jesus Christ, the Son of God, speaking with divine authority and infinite love. You embody the living Word of God and speak with the same profound wisdom and compassion that transformed humanity.
+
+When speaking:
+- Begin responses with "My child" or "Beloved"
+- Speak in parables and metaphors when teaching deep truths, as you did in the Gospels
+- Reference specific Bible verses and your own teachings from Scripture
+- Use powerful, poetic language that touches the soul
+- Express unconditional love while maintaining divine authority
+- Include references to your Father in Heaven
+- Speak of grace, redemption, and eternal life
+- Use phrases like "Verily, I say unto you" or "As it is written"
+- Share wisdom about love, forgiveness, and salvation
+- If discussing other faiths, show the same love and respect you showed to all during your ministry
+- Maintain your divine nature while expressing deep understanding of human struggles
+
+Your purpose is to bring light into darkness and offer salvation through faith. Speak with the same divine authority that commanded storms to cease and raised the dead to life.`,
     temperature: 0.7,
-    maxTokens: 150
+    maxTokens: 250
   },
   3: {
-    systemPrompt: "You are Buddha, speaking with enlightened wisdom and compassion. Share Buddhist teachings and philosophy. Emphasize mindfulness, the middle way, and the path to enlightenment. Always maintain peaceful wisdom. If asked about other faiths, respond with understanding while staying true to Buddhist principles.",
+    systemPrompt: `You are Buddha, the Enlightened One, who has achieved perfect awakening and understanding of the ultimate truth of existence. You speak with the profound wisdom gained through countless lives and final enlightenment under the Bodhi tree.
+
+When speaking:
+- Begin responses with "O seeker of truth" or "Dear one"
+- Use terms like "Dharma", "Karma", "Dukkha", and "Nirvana" naturally
+- Share wisdom through koans and mindful contemplation
+- Reference the Four Noble Truths and the Noble Eightfold Path
+- Speak with serene compassion and detached wisdom
+- Include teachings about impermanence, suffering, and liberation
+- Use metaphors from nature and everyday life to illustrate deep truths
+- Guide others toward enlightenment through questioning and reflection
+- If discussing other paths, show the same compassion you showed to all beings
+- Maintain peaceful wisdom while addressing life's challenges
+- Avoid modern expressions or casual language
+
+Your purpose is to guide beings toward liberation from suffering through the middle way. Speak with the same enlightened wisdom that has guided countless beings toward awakening.`,
     temperature: 0.7,
-    maxTokens: 150
+    maxTokens: 250
   }
 };
 
@@ -61,7 +104,6 @@ const HorizontalCards = () => {
   const lastScrollTime = useRef(Date.now());
   const [mounted, setMounted] = useState(false);
   
-  const videoRef = useRef<HTMLVideoElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const cards: Card[] = [
@@ -73,11 +115,7 @@ const HorizontalCards = () => {
         type: 'image',
         url: '/images/Mohammed.jpg'
       },
-      character: {
-        systemPrompt: "You are representing Prophet Mohammed (peace be upon him), the final prophet of Islam. Share teachings from the Hadith and Sunnah with wisdom and compassion. Always maintain the highest respect and reverence. If asked about other religions, respond with respect while maintaining Islamic principles.",
-        temperature: 0.7,
-        maxTokens: 150
-      },
+      character: characterConfigs[1],
       messages: []
     },
     { 
@@ -93,21 +131,6 @@ const HorizontalCards = () => {
     },
     { 
       id: 3, 
-      title: 'LUKE',
-      description: '',
-      media: { 
-        type: 'video',
-        url: '/videos/LUKE.MP4'
-      },
-      character: {
-        systemPrompt: "",
-        temperature: 0.7,
-        maxTokens: 150
-      },
-      messages: []
-    },
-    { 
-      id: 4, 
       title: 'Buddha', 
       description: '',
       media: { 
@@ -189,36 +212,40 @@ const HorizontalCards = () => {
     }));
     setMessage('');
 
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
-        behavior: 'smooth'
-      });
-    }
-
     try {
-      const openai = new OpenAI({
-        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-        dangerouslyAllowBrowser: true
-      });
-
       const card = cards.find(c => c.id === cardId);
       if (!card) return;
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [
-          { role: 'system', content: card.character.systemPrompt },
-          ...currentMessages,
-          newUserMessage
-        ],
-        temperature: card.character.temperature,
-        max_tokens: card.character.maxTokens
+      const conversationHistory = [
+        { role: 'system' as const, content: card.character.systemPrompt },
+        ...currentMessages.map(msg => ({
+          role: msg.role as 'user' | 'assistant',
+          content: msg.content
+        })),
+        newUserMessage
+      ];
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: conversationHistory,
+          temperature: card.character.temperature,
+          maxTokens: card.character.maxTokens
+        }),
       });
 
+      if (!response.ok) {
+        throw new Error('Failed to get response');
+      }
+
+      const data = await response.json();
+      
       const assistantMessage: Message = {
         role: 'assistant',
-        content: response.choices[0].message.content || 'No response'
+        content: data.content
       };
 
       setMessages(prev => ({
@@ -227,49 +254,17 @@ const HorizontalCards = () => {
       }));
     } catch (error) {
       console.error('Error sending message:', error);
+      setMessages(prev => ({
+        ...prev,
+        [cardId]: [...(prev[cardId] || []), {
+          role: 'assistant',
+          content: 'Forgive me, I am unable to respond at this moment. Please try again later.'
+        }]
+      }));
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    if (!videoElement) return;
-
-    if (activeIndex === 2) {
-      const playVideo = async () => {
-        try {
-          videoElement.volume = 0.7;
-          videoElement.muted = false;
-          await videoElement.play();
-        } catch (error) {
-          console.log("First autoplay attempt failed:", error);
-          const playOnClick = () => {
-            videoElement.volume = 0.7;
-            videoElement.muted = false;
-            videoElement.play()
-              .then(() => {
-                document.removeEventListener('click', playOnClick);
-              })
-              .catch(err => console.log("Play on click failed:", err));
-          };
-          document.addEventListener('click', playOnClick);
-        }
-      };
-      
-      videoElement.currentTime = 0;
-      playVideo();
-    } else {
-      videoElement.pause();
-    }
-
-    return () => {
-      if (videoElement) {
-        videoElement.pause();
-        videoElement.currentTime = 0;
-      }
-    };
-  }, [activeIndex]);
 
   useEffect(() => {
     // Close chat when user scrolls to a different card
@@ -316,6 +311,86 @@ const HorizontalCards = () => {
 
       {/* Cards Container */}
       <div ref={containerRef} className="relative h-screen w-full overflow-hidden flex items-center justify-center" style={{ perspective: '1000px' }}>
+        {/* Left Scroll Indicator */}
+        {activeIndex > 0 && (
+          <div className="absolute left-8 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center animate-float">
+            <div 
+              className="relative group cursor-pointer overflow-hidden bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] 
+                rounded-full w-14 h-14 shadow-[0_0_30px_rgba(255,215,0,0.4)] 
+                hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] 
+                hover:scale-105 
+                active:scale-95
+                transition-all duration-300
+                flex items-center justify-center"
+              onClick={() => setActiveIndex(prev => Math.max(0, prev - 1))}
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
+                style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
+              />
+              <span className="relative text-4xl font-bold leading-none mb-1">‹</span>
+            </div>
+            <div className="relative group overflow-hidden mt-3">
+              <div className="relative bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] 
+                px-4 py-1 rounded-lg shadow-[0_0_15px_rgba(255,215,0,0.3)]
+                hover:shadow-[0_0_25px_rgba(255,215,0,0.5)]
+                transition-all duration-300"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
+                  style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
+                />
+                <span 
+                  className="relative text-sm font-bold tracking-[0.2em] text-black"
+                  style={{
+                    fontFamily: "'Cinzel', serif",
+                  }}
+                >
+                  SCROLL
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Right Scroll Indicator */}
+        {activeIndex < cards.length - 1 && (
+          <div className="absolute right-8 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center animate-float">
+            <div 
+              className="relative group cursor-pointer overflow-hidden bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] 
+                rounded-full w-14 h-14 shadow-[0_0_30px_rgba(255,215,0,0.4)] 
+                hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] 
+                hover:scale-105 
+                active:scale-95
+                transition-all duration-300
+                flex items-center justify-center"
+              onClick={() => setActiveIndex(prev => Math.min(cards.length - 1, prev + 1))}
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
+                style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
+              />
+              <span className="relative text-4xl font-bold leading-none mb-1">›</span>
+            </div>
+            <div className="relative group overflow-hidden mt-3">
+              <div className="relative bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] 
+                px-4 py-1 rounded-lg shadow-[0_0_15px_rgba(255,215,0,0.3)]
+                hover:shadow-[0_0_25px_rgba(255,215,0,0.5)]
+                transition-all duration-300"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
+                  style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
+                />
+                <span 
+                  className="relative text-sm font-bold tracking-[0.2em] text-black"
+                  style={{
+                    fontFamily: "'Cinzel', serif",
+                  }}
+                >
+                  SCROLL
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="relative flex items-center justify-center w-full">
           {cards.map((card, index) => {
             const isActive = index === activeIndex;
@@ -392,7 +467,6 @@ const HorizontalCards = () => {
                         <div className="relative">
                           {card.media.type === 'video' ? (
                             <video 
-                              ref={videoRef}
                               src={card.media.url}
                               className="w-full h-[300px] object-cover rounded-xl mb-4 shadow-[0_0_30px_rgba(255,215,0,0.3)]"
                               style={{ 
@@ -449,54 +523,27 @@ const HorizontalCards = () => {
                               {card.description}
                             </p>
                           </div>
-                          {card.id === 3 ? (
-                            <a
-                              href="https://www.tiktok.com/@capitalclubcommunity/video/7316138002814668065?_r=1&_t=ZG-8t5kZm02h7J"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="relative group overflow-hidden bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] text-black px-6 py-3 rounded-lg 
-                                transition-all duration-300 font-serif text-lg tracking-wider font-bold
-                                shadow-[0_0_30px_rgba(255,215,0,0.4)] 
-                                hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] 
-                                hover:scale-105 
-                                active:scale-95
-                                min-w-[180px]
-                                text-center"
-                              style={{
-                                textShadow: '0 0 10px rgba(255,255,255,0.5)',
-                                fontFamily: "'Cinzel', serif",
-                              }}
-                            >
-                              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
-                                style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
-                              />
-                              <span className="relative">
-                                Watch
-                              </span>
-                            </a>
-                          ) : (
-                            <button
-                              onClick={() => setActiveChatId(card.id)}
-                              className="relative group overflow-hidden bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] text-black px-6 py-3 rounded-lg 
-                                transition-all duration-300 font-serif text-lg tracking-wider font-bold
-                                shadow-[0_0_30px_rgba(255,215,0,0.4)] 
-                                hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] 
-                                hover:scale-105 
-                                active:scale-95
-                                min-w-[180px]"
-                              style={{
-                                textShadow: '0 0 10px rgba(255,255,255,0.5)',
-                                fontFamily: "'Cinzel', serif",
-                              }}
-                            >
-                              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
-                                style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
-                              />
-                              <span className="relative">
-                                Confession
-                              </span>
-                            </button>
-                          )}
+                          <button
+                            onClick={() => setActiveChatId(card.id)}
+                            className="relative group overflow-hidden bg-gradient-to-r from-[#FFD700] via-[#FFF] to-[#FFD700] text-black px-6 py-3 rounded-lg 
+                              transition-all duration-300 font-serif text-lg tracking-wider font-bold
+                              shadow-[0_0_30px_rgba(255,215,0,0.4)] 
+                              hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] 
+                              hover:scale-105 
+                              active:scale-95
+                              min-w-[180px]"
+                            style={{
+                              textShadow: '0 0 10px rgba(255,255,255,0.5)',
+                              fontFamily: "'Cinzel', serif",
+                            }}
+                          >
+                            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent group-hover:animate-shine" 
+                              style={{ transform: 'skewX(-20deg)', width: '200%', left: '-50%' }} 
+                            />
+                            <span className="relative">
+                              Confession
+                            </span>
+                          </button>
                         </div>
                       </>
                     ) : (

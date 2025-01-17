@@ -86,6 +86,10 @@ module.exports = {
         shine: {
           '0%': { left: '-100%' },
           '100%': { left: '200%' }
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(-10px)' },
+          '50%': { transform: 'translateY(0)' }
         }
       },
       animation: {
@@ -100,7 +104,8 @@ module.exports = {
         'cloud-drift-2': 'cloudDrift2 20s ease-in-out infinite',
         'cloud-wave': 'cloudWave 25s ease-in-out infinite',
         'shimmer': 'shimmer 8s ease-in-out infinite',
-        'shine': 'shine 1.5s ease-in-out infinite'
+        'shine': 'shine 1.5s ease-in-out infinite',
+        'float': 'float 3s ease-in-out infinite'
       },
     },
   },
