@@ -36,14 +36,14 @@ const Navbar = () => {
           
           <div className="flex items-center space-x-6">
             <Link 
-              href="https://t.me/your_telegram" 
+              href="https://t.me/ChurchAIPortal" 
               target="_blank"
               className="text-[#8F95B2] hover:text-[#A8E34D] transition-colors"
             >
               <FaTelegramPlane size={24} />
             </Link>
             <Link 
-              href="https://twitter.com/your_twitter" 
+              href="https://x.com/ChurchAISolana" 
               target="_blank"
               className="text-[#8F95B2] hover:text-[#A8E34D] transition-colors"
             >

@@ -1,8 +1,10 @@
 import { OpenAI } from 'openai';
 import { NextResponse } from 'next/server';
 
+// Check for API key
 if (!process.env.OPENAI_API_KEY) {
-  throw new Error('Missing OpenAI API Key');
+  console.error('OPENAI_API_KEY is not set in environment variables');
+  throw new Error('OpenAI API Key is not configured');
 }
 
 const openai = new OpenAI({
@@ -11,23 +13,56 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
   try {
+    // Validate request
+    if (!req.body) {
+      return NextResponse.json(
+        { error: 'Request body is required' },
+        { status: 400 }
+      );
+    }
+
     const body = await req.json();
     const { messages, temperature, maxTokens } = body;
+
+    // Validate required fields
+    if (!messages || !Array.isArray(messages)) {
+      return NextResponse.json(
+        { error: 'Messages array is required' },
+        { status: 400 }
+      );
+    }
 
     const response = await openai.chat.completions.create({
       model: "gpt-4",
       messages,
-      temperature,
-      max_tokens: maxTokens,
+      temperature: temperature || 0.7,
+      max_tokens: maxTokens || 250,
       presence_penalty: 0.6,
       frequency_penalty: 0.5
     });
 
     return NextResponse.json(response.choices[0].message);
-  } catch (error) {
+  } catch (error: any) {
     console.error('OpenAI API error:', error);
+    
+    // Handle different types of errors
+    if (error.response) {
+      // OpenAI API error
+      return NextResponse.json(
+        { error: error.response.data.error.message || 'OpenAI API error' },
+        { status: error.response.status }
+      );
+    } else if (error.code === 'ECONNRESET' || error.code === 'ETIMEDOUT') {
+      // Network error
+      return NextResponse.json(
+        { error: 'Connection to OpenAI failed. Please try again.' },
+        { status: 503 }
+      );
+    }
+
+    // Generic error
     return NextResponse.json(
-      { error: 'Failed to process request' },
+      { error: 'An unexpected error occurred' },
       { status: 500 }
     );
   }
