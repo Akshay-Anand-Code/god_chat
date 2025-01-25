@@ -645,7 +645,7 @@ const HorizontalCards = () => {
             hover:scale-105 
             active:scale-95"
           onClick={() => {
-            navigator.clipboard.writeText("Contract Address Coming Soon");
+            navigator.clipboard.writeText("$CHURCH: 89GUbMgq5xSzYNn8jTthjA6x1fAmMfC6Dx8qxyDHpump");
           }}
         >
           {/* Animated shine effect */}
