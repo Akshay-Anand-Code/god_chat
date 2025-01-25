@@ -42,17 +42,25 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(response.choices[0].message);
-  } catch (error: any) {
-    console.error('OpenAI API error:', error);
+  } catch (error: unknown) {
+    const err = error as Error & { 
+      response?: { 
+        status: number; 
+        data: { error: { message: string } } 
+      };
+      code?: string;
+    };
+
+    console.error('OpenAI API error:', err);
     
     // Handle different types of errors
-    if (error.response) {
+    if (err.response) {
       // OpenAI API error
       return NextResponse.json(
-        { error: error.response.data.error.message || 'OpenAI API error' },
-        { status: error.response.status }
+        { error: err.response.data.error.message || 'OpenAI API error' },
+        { status: err.response.status }
       );
-    } else if (error.code === 'ECONNRESET' || error.code === 'ETIMEDOUT') {
+    } else if (err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT') {
       // Network error
       return NextResponse.json(
         { error: 'Connection to OpenAI failed. Please try again.' },

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { IoSend } from 'react-icons/io5';
 import Image from 'next/image';
 
@@ -105,7 +105,7 @@ const HorizontalCards = () => {
   
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const cards: Card[] = [
+  const cards: Card[] = useMemo(() => [
     { 
       id: 1, 
       title: 'Mohammed',
@@ -139,7 +139,7 @@ const HorizontalCards = () => {
       character: characterConfigs[3],
       messages: []
     }
-  ];
+  ], []);
 
   useEffect(() => {
     setMounted(true);
