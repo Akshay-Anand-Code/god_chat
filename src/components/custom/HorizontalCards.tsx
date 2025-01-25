@@ -663,7 +663,7 @@ const HorizontalCards = () => {
               textShadow: '0 0 10px rgba(255,255,255,0.5)',
             }}
           >
-            $CHURCH: Contract Address Coming Soon
+            $CHURCH: 89GUbMgq5xSzYNn8jTthjA6x1fAmMfC6Dx8qxyDHpump
           </p>
         </div>
 
