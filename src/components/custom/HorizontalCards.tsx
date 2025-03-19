@@ -645,7 +645,7 @@ const HorizontalCards = () => {
             hover:scale-105 
             active:scale-95"
           onClick={() => {
-            navigator.clipboard.writeText("$CHURCH: 89GUbMgq5xSzYNn8jTthjA6x1fAmMfC6Dx8qxyDHpump");
+            navigator.clipboard.writeText("");
           }}
         >
           {/* Animated shine effect */}
@@ -663,14 +663,14 @@ const HorizontalCards = () => {
               textShadow: '0 0 10px rgba(255,255,255,0.5)',
             }}
           >
-            $CHURCH: 89GUbMgq5xSzYNn8jTthjA6x1fAmMfC6Dx8qxyDHpump
+            
           </p>
         </div>
 
         {/* Social Links */}
         <div className="flex gap-6">
           <a 
-            href="https://x.com/churchofai" 
+            href="" 
             target="_blank" 
             rel="noopener noreferrer"
             className="px-3 py-1 bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-md  
@@ -688,7 +688,7 @@ const HorizontalCards = () => {
             X
           </a>
           <a 
-            href="https://t.me/churchofai" 
+            href="" 
             target="_blank" 
             rel="noopener noreferrer"
             className="px-3 py-1 bg-gradient-to-r from-[#0088cc] to-[#00a2ff] rounded-md
@@ -706,7 +706,7 @@ const HorizontalCards = () => {
             Telegram
           </a>
           <a 
-            href="https://pump.fun/token/churchofai" 
+            href="" 
             target="_blank" 
             rel="noopener noreferrer"
             className="px-3 py-1 bg-gradient-to-r from-[#ff3366] to-[#ff6b6b] rounded-md
