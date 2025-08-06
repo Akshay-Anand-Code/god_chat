@@ -1,21 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Cinzel, Cormorant_Garamond } from 'next/font/google';
+import { Inter } from 'next/font/google';
 
-const cinzel = Cinzel({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-cinzel',
-});
-
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ['latin'],
-  variable: '--font-cormorant',
-  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
-  title: "$CHURCH",
-  description: "Chat with fun characters",
+  title: "companion.ai",
+  description: "Chat with AI companions",
 };
 
 export default function RootLayout({
@@ -25,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${cinzel.variable} ${cormorantGaramond.variable} ...`}>
+      <body className={`${inter.variable} font-sans bg-[#121212] text-white`}>
         {children}
       </body>
     </html>
