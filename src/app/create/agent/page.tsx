@@ -65,7 +65,7 @@ export default function AgentCreator() {
           <div className="w-full md:w-2/3">
             <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-md p-6 mb-6">
               <h1 className="text-2xl font-bold mb-1 techno-font tracking-wider text-white">CREATE NEW COMPANION</h1>
-              <p className="text-white">Configure your AI companion's identity, capabilities and behavior</p>
+              <p className="text-white">Configure your AI companion&apos;s identity, capabilities and behavior</p>
               
               {/* Tabs */}
               <div className="flex border-b border-[var(--border)] mt-6 relative">
@@ -117,7 +117,7 @@ export default function AgentCreator() {
                       <label className="block text-sm font-medium mb-1.5 techno-font text-white">DESCRIPTION</label>
                       <textarea 
                         className="w-full bg-[var(--background)] border border-[var(--border)] rounded-sm px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[var(--primary)] h-24 resize-none text-white font-mono"
-                        placeholder="Describe your companion's purpose and capabilities"
+                        placeholder="Describe your companion&apos;s purpose and capabilities"
                         disabled
                       ></textarea>
                     </div>
@@ -172,7 +172,7 @@ export default function AgentCreator() {
                       </div>
                       <textarea 
                         className="w-full bg-[#1a1a24] border border-[#2e2e3a] rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 h-32 resize-none"
-                        placeholder="Describe your agent's personality traits, tone, and speaking style"
+                        placeholder="Describe your companion&apos;s personality traits, tone, and speaking style"
                         disabled
                       ></textarea>
                     </div>
@@ -215,7 +215,7 @@ export default function AgentCreator() {
                       <label className="block text-sm font-medium mb-1.5">Voice & Tone Examples</label>
                       <textarea 
                         className="w-full bg-[#1a1a24] border border-[#2e2e3a] rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 h-24 resize-none"
-                        placeholder="Provide example responses that showcase your agent's voice and tone"
+                        placeholder="Provide example responses that showcase your companion&apos;s voice and tone"
                         disabled
                       ></textarea>
                     </div>
