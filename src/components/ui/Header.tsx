@@ -25,6 +25,14 @@ export default function Header() {
             <span className="text-xl font-semibold gradient-text">AI Companions</span>
           </Link>
           
+          <nav className="hidden sm:flex items-center gap-4">
+            <Link href="/" className="text-[#a0a0b0] hover:text-white transition-colors">Home</Link>
+            <Link href="/dashboard" className="text-[#a0a0b0] hover:text-white transition-colors">Dashboard</Link>
+            <Link href="/create/agent" className="text-[#a0a0b0] hover:text-white transition-colors">
+              Agent Creator
+            </Link>
+          </nav>
+
           <div className="flex items-center space-x-3">
             <div className="hidden md:flex items-center bg-[#14141f]/60 border border-[#2e2e3a] rounded-lg px-3 py-1.5">
               <FiCommand className="text-[#6c6c7c] mr-2" />
