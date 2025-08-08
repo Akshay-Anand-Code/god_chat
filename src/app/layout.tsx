@@ -10,6 +10,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "companion.ai",
   description: "Chat with AI companions",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -19,7 +22,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans bg-[#121212] text-white`}>
+      <body className={`${inter.variable} font-sans text-white`}>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        
+        <div className="bright-star"></div>
+        <div className="bright-star"></div>
+        <div className="bright-star"></div>
+        <div className="bright-star"></div>
+        <div className="bright-star"></div>
         {children}
       </body>
     </html>
